@@ -7,7 +7,7 @@ RUN git clone http://github.com/apache/atlas.git \
 	&& mvn clean -DskipTests package -Pdist \
 	&& mv distro/target/apache-atlas-*-bin.tar.gz /apache-atlas.tar.gz
 
-RUN tar xzf /apache-atlas.tar.gz -C /atlas --strip-components=1
+RUN tar xzf /apache-atlas.tar.gz -C /atlas_out --strip-components=1
 
 
 FROM centos:7
@@ -21,7 +21,7 @@ RUN groupadd hadoop \
 
 USER atlas
 
-COPY --from=stage-atlas /atlas /opt/atlas
+COPY --from=stage-atlas /atlas_out /opt/atlas
 ADD entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["sh", "-c", "/entrypoint.sh"]
