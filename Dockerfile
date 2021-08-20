@@ -23,7 +23,7 @@ RUN groupadd hadoop \
 
 USER atlas
 
-COPY --from=stage-atlas /opt/atlas /opt/atlas
+COPY --from=stage-atlas --chown=atlas /opt/atlas /opt/atlas
 ADD entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["sh", "-c", "/entrypoint.sh"]
