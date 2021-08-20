@@ -5,8 +5,9 @@ ENV	MAVEN_OPTS "-Xms2g -Xmx2g"
 RUN git clone http://github.com/apache/atlas.git \
 	&& cd atlas \
 	&& mvn clean -DskipTests package -Pdist \
-	&& mv distro/target/apache-atlas-*-bin.tar.gz /apache-atlas.tar.gz \
-	&& tar xzf /apache-atlas.tar.gz -C /opt/atlas --strip-components=1
+	&& mv distro/target/apache-atlas-*-bin.tar.gz /apache-atlas.tar.gz
+
+RUN tar xzf /apache-atlas.tar.gz -C /atlas --strip-components=1
 
 
 FROM centos:7
@@ -20,7 +21,7 @@ RUN groupadd hadoop \
 
 USER atlas
 
-COPY --from=stage-atlas /opt/atlas /opt/atlas
+COPY --from=stage-atlas /atlas /opt/atlas
 ADD entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["sh", "-c", "/entrypoint.sh"]
