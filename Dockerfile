@@ -4,7 +4,7 @@ ENV	MAVEN_OPTS "-Xms2g -Xmx2g"
 
 RUN git clone http://github.com/apache/atlas.git \
 	&& cd atlas \
-	&& mvn clean -DskipTests package -Pdist \
+	&& mvn clean -DskipTests package -Pdist,embedded-hbase-solr \
 	&& mv distro/target/apache-atlas-*-bin.tar.gz /apache-atlas.tar.gz
 
 RUN mkdir /opt/atlas \
