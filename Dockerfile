@@ -6,7 +6,7 @@ RUN git clone http://github.com/apache/atlas.git \
 	&& cd atlas \
 	&& git checkout tags/release-2.2.0-rc1 \
 	&& mvn clean -DskipTests package -Pdist,embedded-hbase-solr \
-	&& mv distro/target/apache-atlas-*-bin.tar.gz /apache-atlas.tar.gz
+	&& mv distro/target/apache-atlas-*-server.tar.gz /apache-atlas.tar.gz
 
 RUN mkdir /opt/atlas \
 	&& cd /opt/atlas \
