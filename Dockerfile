@@ -5,7 +5,7 @@ ENV	MAVEN_OPTS "-Xms2g -Xmx2g"
 RUN git clone http://github.com/apache/atlas.git \
 	&& cd atlas \
 	&& mvn clean -DskipTests package -Pdist \
-	&& mv distro/target/apache-atlas-*-bin.tar.gz /apache-atlas.tar.gz
+	&& mv distro/target/apache-atlas-*-bin.tar.gz /apache-atlas.tar.gz \
 	&& tar xzf /apache-atlas.tar.gz -C /opt/atlas --strip-components=1
 
 
