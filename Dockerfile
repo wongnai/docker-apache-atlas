@@ -1,4 +1,4 @@
-FROM maven:3.5.4-jdk-8 AS builder
+FROM maven:3.8.2-jdk-8 AS builder
 
 ARG VERSION=2.2.0
 
