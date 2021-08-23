@@ -10,7 +10,7 @@ RUN cd /tmp \
     && tar --strip-components 1 -xzvf apache-atlas-${ATLAS_VERSION}-sources.tar.gz -C /tmp/atlas-src
 
 RUN cd /tmp/atlas-src \
-    && mvn -q -DskipTests clean package > /tmp/mvn.log \
+    && mvn -DskipTests clean package > /tmp/mvn.log \
     && pwd \
     && tail -100 /tmp/mvn.log
 
