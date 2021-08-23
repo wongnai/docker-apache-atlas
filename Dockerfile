@@ -11,8 +11,8 @@ RUN cd /tmp \
 
 RUN cd /tmp/atlas-src \
     && mvn -DskipTests clean package > /tmp/mvn.log \
-    && pwd \
-    && tail -100 /tmp/mvn.log
+    && tail -100 /tmp/mvn.log \
+    && ls -l /tmp/atlas-src/distro/target
 
 RUN mkdir -p /opt/atlas \
     && tar --strip-components 1 -xzvf /tmp/atlas-src/distro/target/apache-atlas-${ATLAS_VERSION}-server.tar.gz -C /opt/atlas
