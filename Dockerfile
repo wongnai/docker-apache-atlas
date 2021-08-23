@@ -33,8 +33,7 @@ RUN mkdir /opt/atlas \
     && useradd -m -d /opt/atlas -g hadoop atlas \
     && chown -R atlas:hadoop /opt/atlas
 
-
-COPY --from=builder --chown=atlas /opt/atlas_out /opt/atlas
+COPY --from=builder --chown=atlas /opt/atlas /opt/atlas
 
 USER atlas
 
