@@ -1,17 +1,19 @@
 FROM maven:3.8.2-jdk-8 AS builder
 
-ARG VERSION=2.2.0
+ARG ATLAS_VERSION=2.2.0
 
 ENV MAVEN_OPTS "-Xms2g -Xmx2g"
  
 RUN cd /tmp \
-    && wget http://mirror.linux-ia64.org/apache/atlas/${VERSION}/apache-atlas-${VERSION}-sources.tar.gz \
+    && wget http://mirror.linux-ia64.org/apache/atlas/${ATLAS_VERSION}/apache-atlas-${ATLAS_VERSION}-sources.tar.gz \
     && mkdir -p /tmp/atlas-src \
-    && tar --strip-components 1 -xzvf apache-atlas-${VERSION}-sources.tar.gz -C /tmp/atlas-src \
-    && cd /tmp/atlas-src \
-    && mvn -q -DskipTests clean package \
-    && mkdir -p /opt/atlas \
-    && tar --strip-components 1 -xzvf /tmp/atlas-src/distro/target/apache-atlas-${VERSION}-server.tar.gz -C /opt/atlas
+    && tar --strip-components 1 -xzvf apache-atlas-${ATLAS_VERSION}-sources.tar.gz -C /tmp/atlas-src
+
+RUN cd /tmp/atlas-src \
+    && mvn -q -DskipTests clean package
+
+RUN mkdir -p /opt/atlas \
+    && tar --strip-components 1 -xzvf /tmp/atlas-src/distro/target/apache-atlas-${ATLAS_VERSION}-server.tar.gz -C /opt/atlas
 
 
 FROM openjdk:8-jdk-buster
