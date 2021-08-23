@@ -7,13 +7,12 @@ ENV MAVEN_OPTS "-Xms2g -Xmx2g"
 RUN cd /tmp \
     && wget http://mirror.linux-ia64.org/apache/atlas/${VERSION}/apache-atlas-${VERSION}-sources.tar.gz \
     && mkdir -p /tmp/atlas-src \
-    && tar --strip 1 -xzvf apache-atlas-${VERSION}-sources.tar.gz -C /tmp/atlas-src \
+    && tar --strip-components 1 -xzvf apache-atlas-${VERSION}-sources.tar.gz -C /tmp/atlas-src \
     && cd /tmp/atlas-src \
-    && sed -i 's/http:\/\/repo1.maven.org\/maven2/https:\/\/repo1.maven.org\/maven2/g' pom.xml \
-    && mvn clean -Dmaven.repo.local=/tmp/.mvn-repo -Dhttps.protocols=TLSv1.2 -DskipTests package \
+    && mvn -DskipTests clean package \
     && mv distro/target/apache-atlas-*-server.tar.gz /apache-atlas.tar.gz \
     && mkdir -p /opt/atlas \
-    && tar -xzvf /tmp/atlas-src/distro/target/apache-atlas-${VERSION}-server.tar.gz -C /opt/atlas
+    && tar --strip-components 1 -xzvf /tmp/atlas-src/distro/target/apache-atlas-${VERSION}-server.tar.gz -C /opt/atlas
 
 
 FROM openjdk:8-jdk-buster
