@@ -10,7 +10,6 @@ RUN cd /tmp \
     && tar --strip-components 1 -xzvf apache-atlas-${VERSION}-sources.tar.gz -C /tmp/atlas-src \
     && cd /tmp/atlas-src \
     && mvn -q -DskipTests clean package \
-    && mv distro/target/apache-atlas-*-server.tar.gz /apache-atlas.tar.gz \
     && mkdir -p /opt/atlas \
     && tar --strip-components 1 -xzvf /tmp/atlas-src/distro/target/apache-atlas-${VERSION}-server.tar.gz -C /opt/atlas
 
