@@ -18,7 +18,6 @@ RUN apt-get update \
     && rm apache-atlas-${VERSION}-sources.tar.gz \
     && cd /tmp/atlas-src \
     && sed -i 's/http:\/\/repo1.maven.org\/maven2/https:\/\/repo1.maven.org\/maven2/g' pom.xml \
-    && export MAVEN_OPTS="-Xms2g -Xmx2g" \
     && mvn clean -Dmaven.repo.local=/tmp/.mvn-repo -Dhttps.protocols=TLSv1.2 -DskipTests package \
     && ls -l /tmp/atlas-src/distro/target/ \
     && mkdir -p /opt/atlas \
