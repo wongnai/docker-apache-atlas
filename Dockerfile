@@ -1,32 +1,39 @@
-FROM maven:3.5.4-jdk-8 AS stage-atlas
+FROM openjdk:8-jdk-buster
 
-ENV	MAVEN_OPTS "-Xms2g -Xmx2g"
+ARG VERSION=2.2.0
 
-RUN git clone http://github.com/apache/atlas.git \
-	&& cd atlas \
-	&& git checkout tags/release-2.2.0-rc1 \
-	&& mvn clean -DskipTests package -Pdist,embedded-hbase-solr \
-	&& mv distro/target/apache-atlas-*-server.tar.gz /apache-atlas.tar.gz
+RUN apt-get update \
+    && apt-get -y upgrade \
+    && apt-get -y install apt-utils \
+    && apt-get -y install \
+        maven \
+        wget \
+        python \
+		unzip \
+    && cd /tmp \
+    && wget http://mirror.linux-ia64.org/apache/atlas/${VERSION}/apache-atlas-${VERSION}-sources.tar.gz \
+    && mkdir -p /tmp/atlas-src \
+    && tar --strip 1 -xzvf apache-atlas-${VERSION}-sources.tar.gz -C /tmp/atlas-src \
+    && rm apache-atlas-${VERSION}-sources.tar.gz \
+    && cd /tmp/atlas-src \
+    && sed -i 's/http:\/\/repo1.maven.org\/maven2/https:\/\/repo1.maven.org\/maven2/g' pom.xml \
+    && export MAVEN_OPTS="-Xms2g -Xmx2g" \
+    && mvn clean -Dmaven.repo.local=/tmp/.mvn-repo -Dhttps.protocols=TLSv1.2 -DskipTests package \
+	&& mkdir -p /opt/atlas \
+    && tar -xzvf /tmp/atlas-src/distro/target/apache-atlas-${VERSION}-server.tar.gz -C /opt/atlas \
+	&& groupadd hadoop \
+	&& useradd -m -d /opt/atlas -g hadoop atlas \
+	&& chown -R atlas:hadoop /opt/atlas \
+    && rm -Rf /tmp/atlas-src \
+    && rm -Rf /tmp/.mvn-repo \
+    && apt-get -y --purge remove maven \
+    && apt-get -y autoremove \
+    && apt-get -y clean
 
-RUN mkdir /opt/atlas \
-	&& cd /opt/atlas \
-	&& tar xzf /apache-atlas.tar.gz --strip-components=1
-
-
-FROM centos:7
-
-RUN yum update -y \
-	&& yum install -y python python36 java-1.8.0-openjdk java-1.8.0-openjdk-devel net-tools \
-	&& yum clean all
-
-RUN groupadd hadoop \
-	&& useradd -m -d /opt/atlas -g hadoop atlas
+VOLUME ["/opt/atlas/conf", "/opt/atlas/logs", "/opt/atlas/data"]
 
 USER atlas
 
-COPY --from=stage-atlas --chown=atlas /opt/atlas /opt/atlas
-ADD entrypoint.sh /entrypoint.sh
+COPY atlas/ /opt/atlas/
 
-ENTRYPOINT ["sh", "-c", "/entrypoint.sh"]
-
-EXPOSE 21000
+CMD [ "/opt/atlas/bin/start.sh" ]
